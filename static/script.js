@@ -26,23 +26,24 @@ function deleteLast() {
     display.value = display.value.slice(0, -1);
 }
 
-function calculate() {
+async function calculate() {
 
     if (display.value === "") {
         return;
     }
 
-    const lastChar = display.value.slice(-1);
-    const operators = ['+', '-', '*', '/'];
+    const response = await fetch("/calculate", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            expression: display.value
+        })
+    });
 
-    if (operators.includes(lastChar)) {
-        display.value = display.value.slice(0, -1);
-    }
+    const data = await response.json();
 
-    try {
-        display.value = eval(display.value);
-    } catch {
-        display.value = "Error";
-    }
+    display.value = data.result;
 
 }
